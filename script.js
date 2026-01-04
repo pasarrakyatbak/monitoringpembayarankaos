@@ -6,182 +6,161 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('searchInput');
   const tableBody = document.getElementById('tableBody');
   const cardContainer = document.getElementById('cardContainer');
-
   const loadingOverlay = document.getElementById('loadingOverlay');
 
-  // =============================
-  // LOADING HELPER
-  // =============================
-  function showLoading() {
-    loadingOverlay.classList.remove('hidden');
-  }
+  /* =============================
+     LOADING
+  ============================= */
+  const showLoading = () => loadingOverlay.classList.remove('hidden');
+  const hideLoading = () => loadingOverlay.classList.add('hidden');
 
-  function hideLoading() {
-    loadingOverlay.classList.add('hidden');
-  }
-
-  // =============================
-  // LOAD DATA
-  // =============================
+  /* =============================
+     LOAD DATA
+  ============================= */
   async function loadData() {
     try {
       showLoading();
 
-      const res = await fetch(API_URL + "?action=list");
-      const data = await res.json();
+      const res = await fetch(`${API_URL}?action=kaos`);
+      const json = await res.json();
 
-      allData = data;
-      renderAll(data);
-      renderSummary(data);
+      if (json.status !== "success") throw new Error("API error");
+
+      allData = json.hasil;
+      renderAll(allData);
+      renderSummary(allData);
 
     } catch (err) {
       console.error(err);
-      alert("Gagal memuat data");
+      alert("Gagal memuat data kaos");
     } finally {
       hideLoading();
     }
   }
 
-  // =============================
-  // SUMMARY
-  // =============================
+  /* =============================
+     SUMMARY
+  ============================= */
   function renderSummary(data) {
-    const totalPelapak = data.length;
-    const totalLunas = data.filter(d => d.lunas).length;
-    const totalBelum = totalPelapak - totalLunas;
-
-    document.getElementById('totalPelapak').textContent = totalPelapak;
-    document.getElementById('totalLunas').textContent = totalLunas;
-    document.getElementById('totalBelum').textContent = totalBelum;
+    document.getElementById('totalPelapak').textContent = data.length;
+    document.getElementById('totalLunas').textContent =
+      data.filter(d => d.status === "Lunas").length;
+    document.getElementById('totalBelum').textContent =
+      data.filter(d => d.status !== "Lunas").length;
   }
 
-  // =============================
-  // RENDER ALL
-  // =============================
+  /* =============================
+     RENDER ALL
+  ============================= */
   function renderAll(data) {
     renderTable(data);
     renderCard(data);
   }
 
-  // =============================
-  // TABLE (DESKTOP)
-  // =============================
+  /* =============================
+     TABLE (DESKTOP)
+  ============================= */
   function renderTable(data) {
     tableBody.innerHTML = '';
 
-    data.forEach((row, index) => {
-      const statusText = row.lunas ? 'Lunas' : 'Belum Lunas';
-      const statusBadge = row.lunas ? 'badge-lunas' : 'badge-belum';
-      const rowClass = row.lunas ? '' : 'belum-lunas';
-
+    data.forEach(row => {
       tableBody.innerHTML += `
-<tr class="${rowClass}">
+<tr class="${row.status !== 'Lunas' ? 'belum-lunas' : ''}">
   <td>${row.noLapak}</td>
   <td>${row.nama}</td>
   <td>${row.ukuran}</td>
-  <td>${row.jumlahPesan}</td> <!-- ✅ JUMLAH PESANAN -->
-  <td>${row.a1}</td>
-  <td>${row.a2}</td>
-  <td>${row.a3}</td>
-  <td>${row.a4}</td>
+  <td>${row.jumlahPesan}</td>
+  <td>${row.angsuran.a1}</td>
+  <td>${row.angsuran.a2}</td>
+  <td>${row.angsuran.a3}</td>
+  <td>${row.angsuran.a4}</td>
   <td>
-   <input type="checkbox" ${row.qris ? 'checked' : ''} data-index="${row.index}">
+    <input type="checkbox"
+      ${row.qris ? 'checked' : ''}
+      data-nolapak="${row.noLapak}">
   </td>
-  <td>Rp ${Number(row.total).toLocaleString('id-ID')}</td>
+  <td>Rp ${Number(row.sisa).toLocaleString('id-ID')}</td>
   <td>
-    <span class="badge ${statusBadge}">${statusText}</span>
+    <span class="badge ${row.status === 'Lunas' ? 'badge-lunas' : 'badge-belum'}">
+      ${row.status}
+    </span>
   </td>
-</tr>
-`;
-
+</tr>`;
     });
   }
 
-  // =============================
-  // CARD (MOBILE)
-  // =============================
+  /* =============================
+     CARD (MOBILE)
+  ============================= */
   function renderCard(data) {
     cardContainer.innerHTML = '';
 
-    data.forEach((row, index) => {
-      const statusText = row.lunas ? 'Lunas' : 'Belum Lunas';
-      const statusBadge = row.lunas ? 'badge-lunas' : 'badge-belum';
-      const cardClass = row.lunas ? '' : 'belum-lunas';
-
+    data.forEach(row => {
       cardContainer.innerHTML += `
-        <div class="pelapak-card ${cardClass}">
-          <div class="pelapak-header">
-            <div>
-              <div class="lapak">Lapak ${row.noLapak}</div>
-              <div class="nama">${row.nama}</div>
-            </div>
-            <span class="badge ${statusBadge}">${statusText}</span>
-          </div>
+<div class="pelapak-card ${row.status !== 'Lunas' ? 'belum-lunas' : ''}">
+  <div class="pelapak-header">
+    <div>
+      <div class="lapak">Lapak ${row.noLapak}</div>
+      <div class="nama">${row.nama}</div>
+    </div>
+    <span class="badge ${row.status === 'Lunas' ? 'badge-lunas' : 'badge-belum'}">
+      ${row.status}
+    </span>
+  </div>
 
-          <div class="pelapak-body">
-            <div class="item"><span>Ukuran Kaos</span><strong>${row.ukuran}</strong></div>
-             <div class="item"><span>Jumlah Pesanan</span><strong>${row.jumlahPesan}</strong></div>
-            <div class="item"><span>Angsuran 1</span><strong>${row.a1}</strong></div>
-            <div class="item"><span>Angsuran 2</span><strong>${row.a2}</strong></div>
-            <div class="item"><span>Angsuran 3</span><strong>${row.a3}</strong></div>
-            <div class="item"><span>Angsuran 4</span><strong>${row.a4}</strong></div>
-            <div class="item"><span>Sisa Tagihan</span><strong>Rp ${Number(row.total).toLocaleString('id-ID')}</strong></div>
-            <div class="item full">
-              <span>Punya QRIS Danamon</span>
-            <input type="checkbox" ${row.qris ? 'checked' : ''} data-index="${row.index}">
-            </div>
-          </div>
-        </div>
-      `;
+  <div class="pelapak-body">
+    <div class="item"><span>Ukuran Kaos</span><strong>${row.ukuran}</strong></div>
+    <div class="item"><span>Jumlah Pesanan</span><strong>${row.jumlahPesan}</strong></div>
+    <div class="item"><span>Angsuran 1</span><strong>${row.angsuran.a1}</strong></div>
+    <div class="item"><span>Angsuran 2</span><strong>${row.angsuran.a2}</strong></div>
+    <div class="item"><span>Angsuran 3</span><strong>${row.angsuran.a3}</strong></div>
+    <div class="item"><span>Angsuran 4</span><strong>${row.angsuran.a4}</strong></div>
+    <div class="item"><span>Sisa Tagihan</span>
+      <strong>Rp ${Number(row.sisa).toLocaleString('id-ID')}</strong>
+    </div>
+
+    <div class="item full">
+      <span>Punya QRIS Danamon</span>
+      <input type="checkbox"
+        ${row.qris ? 'checked' : ''}
+        data-nolapak="${row.noLapak}">
+    </div>
+  </div>
+</div>`;
     });
   }
 
-
-  // =============================
-  // UPDATE QRIS (WITH LOADING)
-  // =============================
+  /* =============================
+     UPDATE QRIS (PAKAI NO LAPAK)
+  ============================= */
   document.body.addEventListener('change', async (e) => {
-    if (e.target.type === 'checkbox' && e.target.dataset.index !== undefined) {
-      const index = e.target.dataset.index;
-
+    if (e.target.type === 'checkbox' && e.target.dataset.nolapak) {
       try {
         showLoading();
 
-        const formData = new FormData();
-        formData.append("action", "updateQRIS");
-        formData.append("index", index);
-        formData.append("qris", e.target.checked ? "true" : "false");
+        const fd = new FormData();
+        fd.append('action', 'updateQRIS');
+        fd.append('noLapak', e.target.dataset.nolapak);
+        fd.append('qris', e.target.checked ? 'true' : 'false');
 
-        await fetch(API_URL, {
-          method: "POST",
-          body: formData
-        });
+        const res = await fetch(API_URL, { method: 'POST', body: fd });
+        const json = await res.json();
 
-        await loadData();
+        if (!json.success) throw new Error(json.message);
+
+        loadData();
+
       } catch (err) {
+        alert('Gagal update QRIS');
         console.error(err);
-        alert("Gagal update data");
       } finally {
         hideLoading();
       }
     }
   });
 
-  // =============================
-  // SEARCH
-  // =============================
-  searchInput.addEventListener('keyup', () => {
-    const keyword = searchInput.value.toLowerCase();
-
-    const filtered = allData.filter(item =>
-      item.noLapak.toString().includes(keyword) ||
-      item.nama.toLowerCase().includes(keyword)
-    );
-
-    renderAll(filtered);
-    renderSummary(filtered);
-  });
-
-  // INIT
+  /* =============================
+     INIT
+  ============================= */
   loadData();
 });
