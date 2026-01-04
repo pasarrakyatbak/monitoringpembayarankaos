@@ -1,0 +1,98 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+}
+
+.app {
+  padding: 24px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 600;
+  color: #1b5e20;
+}
+
+.header p {
+  margin-top: 4px;
+  color: #4caf50;
+}
+
+.card {
+  margin-top: 20px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+}
+
+.toolbar {
+  margin-bottom: 12px;
+}
+
+.toolbar input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.toolbar input:focus {
+  outline: none;
+  border-color: #2e7d32;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background: #2e7d32;
+  color: white;
+  padding: 12px;
+  font-weight: 500;
+}
+
+td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+tr:hover {
+  background: #f9f9f9;
+}
+
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #2e7d32;
+  cursor: pointer;
+}
+
+.status-lunas {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.status-belum {
+  color: #f57c00;
+}
+
+@media (max-width: 768px) {
+
+  th,
+  td {
+    font-size: 12px;
+    padding: 8px;
+  }
+}

@@ -1,0 +1,24 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+  body { font-family: 'Inter', sans-serif; }
+
+  .badge {
+    @apply px-3 py-1 rounded-full text-[10px] font-bold uppercase;
+  }
+  .status-lunas { background-color: #def7ec; color: #03543f; }
+  .status-cicil { background-color: #fef3c7; color: #92400e; }
+
+  .mobile-card {
+    @apply bg-white p-5 rounded-2xl border border-gray-100 shadow-sm transition-all active:scale-95;
+  }
+
+  .qris-active {
+    color: #10b981;
+    font-size: 1.25rem;
+  }
+
+  /* Animasi Sync */
+  .spin { animation: spin 1s linear infinite; }
+  @keyframes spin { 100% { transform: rotate(360deg); } }
+</style>

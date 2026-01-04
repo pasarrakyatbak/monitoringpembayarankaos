@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring Kaos Bangetayu Kulon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="bg-gray-50 font-sans text-gray-800">
+
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <header class="text-center mb-10">
+            <h1 class="text-3xl font-bold text-emerald-700">Monitoring Pembayaran Kaos</h1>
+            <p class="text-gray-500 font-medium">Pasar Rakyat Bangetayu Kulon</p>
+            <div class="mt-4 flex justify-center gap-4 text-sm">
+                <span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full border border-emerald-200">✅ QRIS
+                    Danamon: 60rb</span>
+                <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full border border-gray-200">❌ Reguler:
+                    85rb</span>
+            </div>
+        </header>
+
+        <div class="mb-8 sticky top-4 z-10">
+            <div class="relative group">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500"></i>
+                <input type="text" id="searchInput" placeholder="Cari Nama Anda atau Nomor Lapak..."
+                    class="w-full pl-12 pr-4 py-4 rounded-2xl border-none shadow-lg focus:ring-2 focus:ring-emerald-500 text-lg transition-all">
+            </div>
+        </div>
+
+        <div id="loading" class="text-center py-20">
+            <div class="animate-spin text-emerald-600 mb-4"><i class="fa-solid fa-circle-notch text-4xl"></i></div>
+            <p class="text-gray-400 font-medium tracking-widest uppercase text-xs">Menghubungkan ke server...</p>
+        </div>
+
+        <div id="dataTableContainer" class="hidden space-y-4">
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

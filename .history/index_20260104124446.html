@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring Kaos Bangetayu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="bg-slate-100 text-slate-800">
+
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-black text-emerald-800 tracking-tight uppercase">Data Pembayaran Kaos</h1>
+            <p class="text-slate-500 font-medium">Pasar Rakyat Bangetayu Kulon</p>
+        </header>
+
+        <div class="mb-6">
+            <div class="relative">
+                <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500"></i>
+                <input type="text" id="searchInput" placeholder="Masukkan Nama atau No. Lapak..."
+                    class="w-full pl-12 pr-4 py-4 rounded-2xl shadow-md border-none focus:ring-4 focus:ring-emerald-200 transition-all text-lg">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-emerald-500">
+                <p class="text-[10px] uppercase font-bold text-slate-400">Promo QRIS</p>
+                <p class="text-xl font-black text-emerald-600">Rp 60.000</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-slate-300">
+                <p class="text-[10px] uppercase font-bold text-slate-400">Harga Normal</p>
+                <p class="text-xl font-black text-slate-600">Rp 85.000</p>
+            </div>
+        </div>
+
+        <div id="loading" class="text-center py-20">
+            <div class="inline-block animate-spin text-emerald-600 mb-4"><i class="fa-solid fa-spinner text-4xl"></i>
+            </div>
+            <p class="text-slate-400 font-bold text-xs uppercase tracking-widest">Sinkronisasi Data...</p>
+        </div>
+
+        <div id="resultsArea" class="space-y-4">
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

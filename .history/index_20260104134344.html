@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring Kaos Pelapak</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="app-container">
+        <header class="main-header">
+            <div class="header-content">
+                <div class="brand">
+                    <div class="logo-icon"><i data-lucide="shopping-bag"></i></div>
+                    <div>
+                        <h1>Monitoring Kaos Pelapak</h1>
+                        <p>Pasar Rakyat Bangetayu Kulon</p>
+                    </div>
+                </div>
+                <div class="stats-overview">
+                    <div class="stat-item">
+                        <span class="label">Total Lunas</span>
+                        <span class="value" id="totalLunas">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">Belum Bayar</span>
+                        <span class="value warning" id="totalBelum">0</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="content">
+            <div class="card table-card">
+                <div class="card-header">
+                    <div class="search-box">
+                        <i data-lucide="search"></i>
+                        <input type="text" id="searchInput" placeholder="Cari lapak, nama, atau ukuran...">
+                    </div>
+                    <div class="actions">
+                        <button class="btn btn-outline"><i data-lucide="download"></i> Export</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table id="monitoringTable">
+                        <thead>
+                            <tr>
+                                <th>No Lapak</th>
+                                <th>Nama Pelapak</th>
+                                <th>Ukuran</th>
+                                <th>Angsuran 1-4</th>
+                                <th>Sisa Tagihan</th>
+                                <th>QRIS Danamon</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>

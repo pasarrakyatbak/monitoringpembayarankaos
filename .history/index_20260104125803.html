@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .status-lunas {
+            @apply bg-green-100 text-green-700;
+        }
+
+        .status-cicil {
+            @apply bg-amber-100 text-amber-700;
+        }
+
+        .loader {
+            border-top-color: #4f46e5;
+            animation: spinner 1.5s linear infinite;
+        }
+
+        @keyframes spinner {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-gray-800">Pasar Rakyat <span class="text-indigo-600">Bangetayu</span></h1>
+            <button onclick="fetchData()" id="btn-refresh"
+                class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition">
+                Refresh Data
+            </button>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="mb-6">
+            <input type="text" id="searchInput" onkeyup="filterData()" placeholder="Cari nama atau nomor lapak..."
+                class="w-full p-4 rounded-xl border border-gray-200 shadow-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+        </div>
+
+        <div class="hidden md:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-gray-50 text-gray-500 text-xs uppercase font-bold">
+                    <tr>
+                        <th class="p-4">No Lapak</th>
+                        <th class="p-4">Pelapak</th>
+                        <th class="p-4 text-center">Ukuran</th>
+                        <th class="p-4 text-center">QRIS</th>
+                        <th class="p-4">Angsuran (1-4)</th>
+                        <th class="p-4">Total Bayar</th>
+                        <th class="p-4 text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body" class="text-sm divide-y divide-gray-100"></tbody>
+            </table>
+        </div>
+
+        <div id="mobile-list" class="md:hidden space-y-4"></div>
+
+        <div id="loading" class="flex flex-col items-center justify-center py-20">
+            <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+            <p class="text-gray-500 animate-pulse">Memuat data pelapak...</p>
+        </div>
+    </div>
+
+    <script>
+        let cacheData = [];
+        const scriptUrl = "<?= ScriptApp.getService().getUrl() ?>";
+
+        async function fetchData() {
+            toggleLoading(true);
+            try {
+                const response = await fetch(`${scriptUrl}?action=getKaos`);
+                const data = await response.json();
+                if (data.status === "success") {
+                    cacheData = data.hasil;
+                    render(cacheData);
+                }
+            } catch (e) {
+                console.error("Error:", e);
+                alert("Gagal mengambil data");
+            }
+            toggleLoading(false);
+        }
+
+        function render(data) {
+            const tbody = document.getElementById('table-body');
+            const mList = document.getElementById('mobile-list');
+            tbody.innerHTML = '';
+            mList.innerHTML = '';
+
+            data.forEach(item => {
+                const statusClass = item.status === 'LUNAS' ? 'status-lunas' : 'status-cicil';
+
+                // Render Desktop
+                const row = `
+        <tr class="hover:bg-gray-50 transition">
+          <td class="p-4 font-bold text-indigo-600">${item.no_lapak}</td>
+          <td class="p-4 font-semibold text-gray-700">${item.nama}</td>
+          <td class="p-4 text-center">${item.ukuran}</td>
+          <td class="p-4 text-center">${item.qris ? '✅' : '❌'}</td>
+          <td class="p-4 text-xs text-gray-500">${item.angsuran.map(a => a.toLocaleString()).join(' | ')}</td>
+          <td class="p-4 font-bold">Rp ${item.total_bayar.toLocaleString()}</td>
+          <td class="p-4 text-center"><span class="px-3 py-1 rounded-full font-bold text-[10px] ${statusClass}">${item.status}</span></td>
+        </tr>`;
+                tbody.insertAdjacentHTML('beforeend', row);
+
+                // Render Mobile
+                const card = `
+        <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+          <div class="flex justify-between items-start mb-3">
+            <div>
+              <p class="text-[10px] font-bold text-indigo-500 uppercase">Lapak ${item.no_lapak}</p>
+              <h3 class="font-bold text-gray-800">${item.nama}</h3>
+            </div>
+            <span class="px-2 py-1 rounded-md font-bold text-[10px] ${statusClass}">${item.status}</span>
+          </div>
+          <div class="flex justify-between text-xs text-gray-500 border-t pt-3">
+            <span>Size: <b>${item.ukuran}</b></span>
+            <span>QRIS: <b>${item.qris ? 'Ya' : 'Tidak'}</b></span>
+            <span>Total: <b class="text-indigo-600">Rp ${item.total_bayar.toLocaleString()}</b></span>
+          </div>
+        </div>`;
+                mList.insertAdjacentHTML('beforeend', card);
+            });
+        }
+
+        function filterData() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = cacheData.filter(item =>
+                item.nama.toLowerCase().includes(query) || item.no_lapak.toString().includes(query)
+            );
+            render(filtered);
+        }
+
+        function toggleLoading(show) {
+            document.getElementById('loading').style.display = show ? 'flex' : 'none';
+            document.getElementById('btn-refresh').innerText = show ? 'Loading...' : 'Refresh Data';
+        }
+
+        window.onload = fetchData;
+    </script>
+</body>
+
+</html>

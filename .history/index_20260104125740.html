@@ -1,0 +1,62 @@
+// CONFIG
+const SPREADSHEET_ID = "1UMLrC2UBceGwx48dLuacZQVas0QTCbctMBcbKjdCsTU";
+const KAOS_SHEET = "Kaos";
+
+function doGet(e) {
+  const action = e.parameter.action;
+  
+  // Jika akses biasa (buka web), tampilkan UI
+  if (!action) {
+    return HtmlService.createTemplateFromFile('index')
+      .evaluate()
+      .addMetaTag('viewport', 'width=device-width, initial-scale=1')
+      .setTitle('Monitoring Kaos Bangetayu');
+  }
+
+  // Jika akses API (getKaos), kirim JSON
+  if (action === "getKaos") {
+    return getKaosData();
+  }
+}
+
+function include(filename) {
+  return HtmlService.createHtmlOutputFromFile(filename).getContent();
+}
+
+function getKaosData() {
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = ss.getSheetByName(KAOS_SHEET);
+    const values = sheet.getDataRange().getValues();
+    values.shift(); // Hapus header
+
+    const hasil = values.map(row => {
+      // LOGIKA: Jika QRIS (index 2) TRUE, potong 25.000
+      const isQris = row[2] === true || row[2] === "TRUE";
+      const hargaAwal = parseFloat(row[4]) || 150000; // Default harga
+      const potongan = isQris ? 25000 : 0;
+      const hargaFinal = hargaAwal - potongan;
+
+      const angsuranTotal = (parseFloat(row[5]) || 0) + (parseFloat(row[6]) || 0) + 
+                            (parseFloat(row[7]) || 0) + (parseFloat(row[8]) || 0);
+
+      return {
+        nama: row[0] || "Tanpa Nama",
+        no_lapak: row[1] || "-",
+        qris: isQris,
+        ukuran: row[3] || "-",
+        harga_total: hargaFinal,
+        angsuran: [row[5] || 0, row[6] || 0, row[7] || 0, row[8] || 0],
+        total_bayar: angsuranTotal,
+        sisa: Math.max(0, hargaFinal - angsuranTotal),
+        status: (angsuranTotal >= hargaFinal || isQris) ? "LUNAS" : "DICICIL"
+      };
+    });
+
+    return ContentService.createTextOutput(JSON.stringify({ status: "success", hasil: hasil }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.message }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}

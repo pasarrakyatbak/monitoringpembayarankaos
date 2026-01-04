@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <?!= include('css'); ?>
+</head>
+
+<body>
+
+    <header class="top-nav">
+        <div class="container nav-box">
+            <div class="brand">
+                <div class="logo-circle"><i class="fas fa-store"></i></div>
+                <div class="brand-text">
+                    <h1>Pasar Rakyat</h1>
+                    <p>Bangetayu Kulon</p>
+                </div>
+            </div>
+            <button class="refresh-btn" onclick="refreshData()">
+                <i id="refresh-icon" class="fas fa-sync-alt"></i> <span>Perbarui</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="search-area">
+            <div class="input-group">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" onkeyup="filterData()"
+                    placeholder="Cari nama pelapak atau nomor lapak...">
+            </div>
+        </section>
+
+        <div id="loader" class="loader">
+            <div class="spinner"></div>
+            <p>Sinkronisasi Data Sheet...</p>
+        </div>
+
+        <div class="table-card desktop-view">
+            <table id="mainTable">
+                <thead>
+                    <tr>
+                        <th>No Lapak</th>
+                        <th>Nama Pelapak</th>
+                        <th>Ukuran</th>
+                        <th>Angsuran 1-4</th>
+                        <th>Metode</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <div id="mobileList" class="mobile-view"></div>
+    </main>
+
+    <?!= include('js'); ?>
+</body>
+
+</html>

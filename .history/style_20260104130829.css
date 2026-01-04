@@ -1,0 +1,26 @@
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #6366f1;
+  border-radius: 10px;
+}
+
+.status-lunas {
+  @apply bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-bold;
+}
+
+.status-belum {
+  @apply bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-bold;
+}
+
+tr:hover {
+  background-color: #f9fafb;
+  transition: background 0.2s;
+}

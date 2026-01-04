@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <?!= include('css'); ?>
+</head>
+
+<body class="bg-gray-50 text-gray-900">
+
+    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="bg-indigo-600 p-2 rounded-lg">
+                    <i class="fas fa-store text-white"></i>
+                </div>
+                <span class="font-bold text-lg hidden sm:block">Monitoring Pembayaran Kaos</span>
+            </div>
+            <button onclick="fetchData()"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-xl text-sm font-semibold transition-all flex items-center shadow-md">
+                <i id="refresh-icon" class="fas fa-sync-alt mr-2"></i> Refresh
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        <div class="relative mb-8 group">
+            <i
+                class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-600 transition-colors"></i>
+            <input type="text" id="searchInput" onkeyup="filterData()"
+                placeholder="Cari nomor lapak atau nama pelapak..."
+                class="w-full pl-12 pr-6 py-4 rounded-2xl border-none shadow-sm ring-1 ring-gray-200 focus:ring-2 focus:ring-indigo-600 outline-none bg-white transition-all">
+        </div>
+
+        <div
+            class="hidden lg:block bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-gray-50/50">
+                    <tr class="text-xs uppercase font-bold text-gray-500 tracking-wider">
+                        <th class="p-5">Lapak</th>
+                        <th class="p-5">Pelapak</th>
+                        <th class="p-5 text-center">Ukuran</th>
+                        <th class="p-5 text-center">QRIS</th>
+                        <th class="p-5">Rincian Angsuran</th>
+                        <th class="p-5">Total Dibayar</th>
+                        <th class="p-5 text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body" class="divide-y divide-gray-100">
+                </tbody>
+            </table>
+        </div>
+
+        <div id="mobile-list" class="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+        </div>
+
+        <div id="loading" class="flex flex-col items-center justify-center py-20">
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-indigo-600 border-t-transparent"></div>
+            <p class="mt-4 text-gray-500 font-medium">Mengambil data dari server...</p>
+        </div>
+    </main>
+
+    <?!= include('js'); ?>
+</body>
+
+</html>

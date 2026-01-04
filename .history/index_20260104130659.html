@@ -1,0 +1,55 @@
+=============================
+FILE: index.html
+=============================
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monitoring Pembayaran Kaos</title>
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="app">
+    <header class="header">
+      <h1>Monitoring Kaos Pelapak</h1>
+      <p>Pasar Rakyat Bangetayu Kulon</p>
+    </header>
+
+    <div class="card">
+      <div class="toolbar">
+        <input type="text" id="searchInput" placeholder="Cari No Lapak / Nama Pelapak..." />
+      </div>
+
+      <table id="dataTable">
+        <thead>
+          <tr>
+            <th>No Lapak</th>
+            <th>Nama</th>
+            <th>Ukuran</th>
+            <th>A1</th>
+            <th>A2</th>
+            <th>A3</th>
+            <th>A4</th>
+            <th>Total</th>
+            <th>QRIS</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script src="script.js"></script>
+</body>
+</html>
