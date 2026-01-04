@@ -15,7 +15,6 @@
 </head>
 
 <body>
-
     <div class="app">
 
         <!-- HEADER -->
@@ -33,7 +32,7 @@
         <div class="card">
 
             <!-- RINGKASAN -->
-            <div class="summary" id="summary">
+            <div class="summary">
                 <div class="summary-card total">
                     <span>Total Pelapak</span>
                     <strong id="totalPelapak">0</strong>
@@ -48,28 +47,28 @@
                 </div>
             </div>
 
+            <!-- INFO KAOS -->
             <section class="kaos-section">
-                <h2>Size Chart & Desain Kaos Pelapak <br>
-                    Bahan Lacoste</h2>
-
+                <h2>Size Chart & Desain Kaos Pelapak<br>Bahan Lacoste</h2>
                 <div class="kaos-image-wrapper">
-                    <img src="assets/img/kaos.png" alt="Size Chart dan Desain Kaos" class="kaos-image" id="kaosImage">
+                    <img src="assets/img/kaos.png" class="kaos-image" id="kaosImage">
                 </div>
             </section>
-            <!-- ===== INFO SUBSIDI QRIS ===== -->
+
+            <!-- INFO QRIS -->
             <div class="qris-info">
                 <p>
-                    💳 <strong>Pelapak yang sudah membuat QRIS Danamon:</strong><br>
-                    Dapatkan <strong>Subsidi Sponsor Rp25.000</strong> untuk setiap pembelian <strong>1 kaos
-                        pertama</strong>.<br>
-                    Harga Spesial: <strong>Rp60.000</strong> (Hemat dari harga normal <del>Rp85.000</del>).<br><br>
-                    <em>*Catatan: Untuk pemesanan kaos ke-2 dan seterusnya, berlaku <strong>harga normal</strong>.</em>
+                    💳 <strong>Pelapak dengan QRIS Danamon</strong><br>
+                    Subsidi Sponsor <strong>Rp25.000</strong> untuk kaos pertama.<br>
+                    Harga Spesial: <strong>Rp60.000</strong>
                 </p>
             </div>
-             <!-- TOOLBAR -->
+
+            <!-- TOOLBAR -->
             <div class="toolbar">
                 <input type="text" id="searchInput" placeholder="🔍 Cari No Lapak / Nama Pelapak">
             </div>
+
             <!-- DESKTOP TABLE -->
             <div class="desktop-view">
                 <table>
@@ -78,12 +77,13 @@
                             <th>No Lapak</th>
                             <th>Nama Pelapak</th>
                             <th>Ukuran Kaos</th>
+                            <th>Jumlah Pesanan</th>
                             <th>Angsuran 1</th>
                             <th>Angsuran 2</th>
                             <th>Angsuran 3</th>
                             <th>Angsuran 4</th>
-                            <th>Sisa Tagihan</th>
                             <th>Punya QRIS Danamon</th>
+                            <th>Sisa Tagihan</th>
                             <th>Status Pembayaran</th>
                         </tr>
                     </thead>
@@ -97,23 +97,19 @@
         </div>
     </div>
 
-    <!-- ===== MODAL ZOOM GAMBAR ===== -->
+    <!-- MODAL ZOOM -->
     <div class="image-modal hidden" id="imageModal">
         <span class="close">&times;</span>
         <img class="modal-content" id="modalImg">
     </div>
 
-    <!-- ===== LOADING OVERLAY ===== -->
+    <!-- LOADING (SATU SAJA) -->
     <div id="loadingOverlay" class="loading-overlay hidden">
         <div class="spinner"></div>
         <p>Memuat data...</p>
     </div>
+
     <script src="script.js"></script>
-    <!-- LOADING OVERLAY -->
-    <div id="loadingOverlay" class="loading-overlay hidden">
-        <div class="spinner"></div>
-        <p>Memuat data...</p>
-    </div>
 </body>
 
 </html>
