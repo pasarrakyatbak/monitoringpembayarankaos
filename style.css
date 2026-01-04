@@ -134,7 +134,7 @@ thead th {
 tbody td {
   padding: 12px;
   font-size: 13px;
-  text-align: center;
+  text-align: left;
   border-bottom: 1px solid #eee;
 }
 
