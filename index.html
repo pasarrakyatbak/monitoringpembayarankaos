@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monitoring Pembayaran Kaos</title>
 
-    <!-- FONT -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -17,7 +16,6 @@
 <body>
     <div class="app">
 
-        <!-- HEADER -->
         <header class="header">
             <div class="header-content">
                 <img src="assets/img/logo.png" alt="Logo" class="header-logo">
@@ -28,10 +26,8 @@
             </div>
         </header>
 
-        <!-- CARD -->
         <div class="card">
 
-            <!-- RINGKASAN -->
             <div class="summary">
                 <div class="summary-card total">
                     <span>Total Pelapak</span>
@@ -47,7 +43,13 @@
                 </div>
             </div>
 
-            <!-- INFO KAOS -->
+            <div class="rekap-container">
+                <h3>📦 Rekap Produksi Kaos (Sudah Lunas)</h3>
+                <div id="rekapUkuranContainer" class="rekap-grid">
+                    <p style="font-size: 12px; color: #666;">Memuat rekap ukuran...</p>
+                </div>
+            </div>
+
             <section class="kaos-section">
                 <h2>Size Chart & Desain Kaos Pelapak<br>Bahan Lacoste</h2>
                 <div class="kaos-image-wrapper">
@@ -55,8 +57,7 @@
                 </div>
             </section>
 
-             <!-- ===== INFO SUBSIDI QRIS ===== -->
-            <div class="qris-info">
+             <div class="qris-info">
                 <p>
                     💳 <strong>Pelapak yang sudah membuat QRIS Danamon:</strong><br>
                     Dapatkan <strong>Subsidi Sponsor Rp25.000</strong> untuk setiap pembelian <strong>1 kaos
@@ -66,50 +67,47 @@
                 </p>
             </div>
 
-            <!-- TOOLBAR -->
             <div class="toolbar">
                 <input type="text" id="searchInput" placeholder="🔍 Cari No Lapak / Nama Pelapak">
             </div>
 
             <div class="desktop-view">
-    <table>
-        <thead>
-            <tr>
-                <th>No Lapak</th>
-                <th>Nama Pelapak</th>
-                <th>Ukuran Kaos</th>
-                <th>Jml</th>
-                <th>A1</th>
-                <th>A2</th>
-                <th>A3</th>
-                <th>A4</th>
-                <th>A5</th>
-                <th>A6</th>
-                <th>A7</th>
-                <th>A8</th>
-                <th>A9</th>
-                <th>A10</th>
-                <th>QRIS</th>
-                <th>Sisa Tagihan</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-    </table>
-</div>
-            <!-- MOBILE CARD -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No Lapak</th>
+                            <th>Nama Pelapak</th>
+                            <th>Ukuran</th>
+                            <th>Jml</th>
+                            <th>A1</th>
+                            <th>A2</th>
+                            <th>A3</th>
+                            <th>A4</th>
+                            <th>A5</th>
+                            <th>A6</th>
+                            <th>A7</th>
+                            <th>A8</th>
+                            <th>A9</th>
+                            <th>A10</th>
+                            <th>QRIS</th>
+                            <th>Sisa Tagihan</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+
             <div class="mobile-view" id="cardContainer"></div>
 
         </div>
     </div>
 
-    <!-- MODAL ZOOM -->
     <div class="image-modal hidden" id="imageModal">
         <span class="close">&times;</span>
         <img class="modal-content" id="modalImg">
     </div>
 
-    <!-- LOADING (SATU SAJA) -->
     <div id="loadingOverlay" class="loading-overlay hidden">
         <div class="spinner"></div>
         <p>Memuat data...</p>
