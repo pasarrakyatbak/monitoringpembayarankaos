@@ -9,13 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const loadingOverlay = document.getElementById('loadingOverlay');
 
   /* =============================
-     LOADING
+      LOADING
   ============================= */
   const showLoading = () => loadingOverlay.classList.remove('hidden');
   const hideLoading = () => loadingOverlay.classList.add('hidden');
 
   /* =============================
-     LOAD DATA
+      LOAD DATA
   ============================= */
   async function loadData() {
     try {
@@ -28,7 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       allData = json.hasil;
       renderAll(allData);
-      renderSummary(allData);
+      
+      // Kirim json.rekapUkuranLunas ke fungsi summary
+      renderSummary(allData, json.rekapUkuranLunas);
 
     } catch (err) {
       console.error(err);
@@ -39,111 +41,127 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* =============================
-     SUMMARY
+      SUMMARY & REKAP UKURAN
   ============================= */
-  function renderSummary(data) {
+  function renderSummary(data, rekapUkuran) {
+    // Info Umum
     document.getElementById('totalPelapak').textContent = data.length;
     document.getElementById('totalLunas').textContent =
       data.filter(d => d.status === "Lunas").length;
     document.getElementById('totalBelum').textContent =
       data.filter(d => d.status !== "Lunas").length;
+
+    // Info Rekap Ukuran Lunas (Tampilkan hanya jika elemennya ada di HTML)
+    const rekapContainer = document.getElementById('rekapUkuranContainer');
+    if (rekapContainer && rekapUkuran) {
+      let html = '';
+      for (const [ukuran, jumlah] of Object.entries(rekapUkuran)) {
+        if (jumlah > 0) { // Hanya tampilkan yang sudah ada terbayar
+          html += `
+            <div class="ukuran-item">
+              <span class="label">${ukuran}</span>
+              <span class="val">${jumlah}</span>
+            </div>`;
+        }
+      }
+      rekapContainer.innerHTML = html || '<p style="font-size:12px; color:#666;">Belum ada kaos lunas</p>';
+    }
   }
 
   /* =============================
-     RENDER ALL
+      RENDER ALL
   ============================= */
   function renderAll(data) {
     renderTable(data);
     renderCard(data);
   }
 
-/* =============================
-    TABLE (DESKTOP) - Updated for 10 Installments
-============================= */
-function renderTable(data) {
-  tableBody.innerHTML = '';
+  /* =============================
+      TABLE (DESKTOP)
+  ============================= */
+  function renderTable(data) {
+    tableBody.innerHTML = '';
 
-  data.forEach(row => {
-    // Generate kolom angsuran 1-10 secara dinamis
-    let installmentCols = '';
-    for (let i = 1; i <= 10; i++) {
-      installmentCols += `<td>${row.angsuran['a' + i] || 0}</td>`;
-    }
-
-    tableBody.innerHTML += `
-      <tr class="${row.status !== 'Lunas' ? 'belum-lunas' : ''}">
-        <td>${row.noLapak}</td>
-        <td>${row.nama}</td>
-        <td>${row.ukuran}</td>
-        <td>${row.jumlahPesan}</td>
-        ${installmentCols} 
-        <td>
-          <input type="checkbox"
-            ${row.qris ? 'checked' : ''}
-            data-nolapak="${row.noLapak}">
-        </td>
-        <td>Rp ${Number(row.sisa).toLocaleString('id-ID')}</td>
-        <td>
-          <span class="badge ${row.status === 'Lunas' ? 'badge-lunas' : 'badge-belum'}">
-            ${row.status}
-          </span>
-        </td>
-      </tr>`;
-  });
-}
-
-/* =============================
-    CARD (MOBILE) - Updated for 10 Installments
-============================= */
-function renderCard(data) {
-  cardContainer.innerHTML = '';
-
-  data.forEach(row => {
-    // Generate list angsuran 1-10 untuk mobile
-    let installmentList = '';
-    for (let i = 1; i <= 10; i++) {
-      const nilai = row.angsuran['a' + i] || 0;
-      // Hanya tampilkan di mobile jika sudah ada isinya (opsional, agar card tidak terlalu panjang)
-      // Jika ingin tampil semua, hapus kondisi if(nilai > 0)
-      if (nilai > 0 || i <= 4) { 
-        installmentList += `<div class="item"><span>Angsuran ${i}</span><strong>${nilai}</strong></div>`;
+    data.forEach(row => {
+      let installmentCols = '';
+      for (let i = 1; i <= 10; i++) {
+        installmentCols += `<td>${row.angsuran['a' + i] || 0}</td>`;
       }
-    }
 
-    cardContainer.innerHTML += `
-      <div class="pelapak-card ${row.status !== 'Lunas' ? 'belum-lunas' : ''}">
-        <div class="pelapak-header">
-          <div>
-            <div class="lapak">Lapak ${row.noLapak}</div>
-            <div class="nama">${row.nama}</div>
-          </div>
-          <span class="badge ${row.status === 'Lunas' ? 'badge-lunas' : 'badge-belum'}">
-            ${row.status}
-          </span>
-        </div>
-
-        <div class="pelapak-body">
-          <div class="item"><span>Ukuran Kaos</span><strong>${row.ukuran}</strong></div>
-          <div class="item"><span>Jumlah Pesanan</span><strong>${row.jumlahPesan}</strong></div>
-          
-          ${installmentList}
-
-          <div class="item highlight"><span>Sisa Tagihan</span>
-            <strong>Rp ${Number(row.sisa).toLocaleString('id-ID')}</strong>
-          </div>
-
-          <div class="item full">
-            <span>Punya QRIS Danamon</span>
+      tableBody.innerHTML += `
+        <tr class="${row.status !== 'Lunas' ? 'belum-lunas' : ''}">
+          <td>${row.noLapak}</td>
+          <td>${row.nama}</td>
+          <td>${row.ukuran}</td>
+          <td>${row.jumlahPesan}</td>
+          ${installmentCols} 
+          <td>
             <input type="checkbox"
               ${row.qris ? 'checked' : ''}
               data-nolapak="${row.noLapak}">
-          </div>
-        </div>
-      </div>`;
-  });
-}
+          </td>
+          <td>Rp ${Number(row.sisa).toLocaleString('id-ID')}</td>
+          <td>
+            <span class="badge ${row.status === 'Lunas' ? 'badge-lunas' : 'badge-belum'}">
+              ${row.status}
+            </span>
+          </td>
+        </tr>`;
+    });
+  }
+
   /* =============================
-     UPDATE QRIS (PAKAI NO LAPAK)
+      CARD (MOBILE)
+  ============================= */
+  function renderCard(data) {
+    cardContainer.innerHTML = '';
+
+    data.forEach(row => {
+      let installmentList = '';
+      for (let i = 1; i <= 10; i++) {
+        const nilai = row.angsuran['a' + i] || 0;
+        if (nilai > 0 || i <= 4) { 
+          installmentList += `<div class="item"><span>A${i}</span><strong>${nilai.toLocaleString('id-ID')}</strong></div>`;
+        }
+      }
+
+      cardContainer.innerHTML += `
+        <div class="pelapak-card ${row.status !== 'Lunas' ? 'belum-lunas' : ''}">
+          <div class="pelapak-header">
+            <div>
+              <div class="lapak">Lapak ${row.noLapak}</div>
+              <div class="nama">${row.nama}</div>
+            </div>
+            <span class="badge ${row.status === 'Lunas' ? 'badge-lunas' : 'badge-belum'}">
+              ${row.status}
+            </span>
+          </div>
+
+          <div class="pelapak-body">
+            <div class="item"><span>Ukuran</span><strong>${row.ukuran}</strong></div>
+            <div class="item"><span>Jml Pesan</span><strong>${row.jumlahPesan}</strong></div>
+            
+            <div class="installment-grid">
+              ${installmentList}
+            </div>
+
+            <div class="item highlight"><span>Sisa Tagihan</span>
+              <strong>Rp ${Number(row.sisa).toLocaleString('id-ID')}</strong>
+            </div>
+
+            <div class="item full">
+              <span>Potongan QRIS</span>
+              <input type="checkbox"
+                ${row.qris ? 'checked' : ''}
+                data-nolapak="${row.noLapak}">
+            </div>
+          </div>
+        </div>`;
+    });
+  }
+
+  /* =============================
+      UPDATE QRIS
   ============================= */
   document.body.addEventListener('change', async (e) => {
     if (e.target.type === 'checkbox' && e.target.dataset.nolapak) {
@@ -160,6 +178,7 @@ function renderCard(data) {
 
         if (!json.success) throw new Error(json.message);
 
+        // Memuat ulang data untuk memperbarui Sisa Tagihan dan Rekap Ukuran
         loadData();
 
       } catch (err) {
@@ -172,7 +191,7 @@ function renderCard(data) {
   });
 
   /* =============================
-     INIT
+      INIT
   ============================= */
   loadData();
 });
