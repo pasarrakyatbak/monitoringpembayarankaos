@@ -53,22 +53,22 @@
             <section class="kaos-section">
                 <h2>Size Chart & Desain Kaos Pelapak<br>Bahan Lacoste</h2>
                 <div class="kaos-image-wrapper">
-                    <img src="assets/img/kaos.png" class="kaos-image" id="kaosImage">
+                    <img src="assets/img/kaos.png" class="kaos-image" id="kaosImage" style="cursor: zoom-in;">
+                    <p class="hint">Klik gambar untuk memperbesar</p>
                 </div>
             </section>
 
-             <div class="qris-info">
+            <div class="qris-info">
                 <p>
                     💳 <strong>Pelapak yang sudah membuat QRIS Danamon:</strong><br>
-                    Dapatkan <strong>Subsidi Sponsor Rp25.000</strong> untuk setiap pembelian <strong>1 kaos
-                        pertama</strong>.<br>
+                    Dapatkan <strong>Subsidi Sponsor Rp25.000</strong> untuk setiap pembelian <strong>1 kaos pertama</strong>.<br>
                     Harga Spesial: <strong>Rp60.000</strong> (Hemat dari harga normal <del>Rp85.000</del>).<br><br>
                     <em>*Catatan: Untuk pemesanan kaos ke-2 dan seterusnya, berlaku <strong>harga normal</strong>.</em>
                 </p>
             </div>
 
             <div class="toolbar">
-                <input type="text" id="searchInput" placeholder="🔍 Cari No Lapak / Nama Pelapak">
+                <input type="text" id="searchInput" placeholder="🔍 Cari No Lapak atau Nama Pelapak...">
             </div>
 
             <div class="desktop-view">
@@ -79,16 +79,8 @@
                             <th>Nama Pelapak</th>
                             <th>Ukuran</th>
                             <th>Jml</th>
-                            <th>A1</th>
-                            <th>A2</th>
-                            <th>A3</th>
-                            <th>A4</th>
-                            <th>A5</th>
-                            <th>A6</th>
-                            <th>A7</th>
-                            <th>A8</th>
-                            <th>A9</th>
-                            <th>A10</th>
+                            <th>A1</th><th>A2</th><th>A3</th><th>A4</th><th>A5</th>
+                            <th>A6</th><th>A7</th><th>A8</th><th>A9</th><th>A10</th>
                             <th>QRIS</th>
                             <th>Sisa Tagihan</th>
                             <th>Status</th>
@@ -104,7 +96,7 @@
     </div>
 
     <div class="image-modal hidden" id="imageModal">
-        <span class="close">&times;</span>
+        <span class="close" id="closeModal">&times;</span>
         <img class="modal-content" id="modalImg">
     </div>
 
@@ -114,6 +106,30 @@
     </div>
 
     <script src="script.js"></script>
+    
+    <script>
+        const kaosImg = document.getElementById('kaosImage');
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImg');
+        const closeBtn = document.getElementById('closeModal');
+
+        if(kaosImg) {
+            kaosImg.onclick = function() {
+                modal.classList.remove('hidden');
+                modalImg.src = this.src;
+            }
+        }
+        if(closeBtn) {
+            closeBtn.onclick = function() {
+                modal.classList.add('hidden');
+            }
+        }
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.classList.add('hidden');
+            }
+        }
+    </script>
 </body>
 
 </html>
