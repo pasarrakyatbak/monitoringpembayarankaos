@@ -1,6 +1,6 @@
 const API_URL = "https://script.google.com/macros/s/AKfycby4z2qZ24SrJkcyGpybH29lSUC_3_z1LG-7wSmTzpaOEXrwjXf0Cl3hqkg95qAxPj1-/exec";
 
-let allData = [];
+let allData = []; // Tempat menyimpan data asli dari API
 
 document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('searchInput');
@@ -20,16 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadData() {
     try {
       showLoading();
-
       const res = await fetch(`${API_URL}?action=kaos`);
       const json = await res.json();
 
       if (json.status !== "success") throw new Error("API error");
 
-      allData = json.hasil;
+      allData = json.hasil; // Simpan ke variabel global agar bisa di-filter
       renderAll(allData);
-      
-      // Kirim json.rekapUkuranLunas ke fungsi summary
       renderSummary(allData, json.rekapUkuranLunas);
 
     } catch (err) {
@@ -41,22 +38,37 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* =============================
+      LOGIKA PENCARIAN (SEARCH) - TAMBAHKAN INI
+  ============================= */
+  searchInput.addEventListener('input', (e) => {
+    const keyword = e.target.value.toLowerCase();
+    
+    // Filter data berdasarkan No Lapak atau Nama
+    const filteredData = allData.filter(item => {
+      const noLapak = String(item.noLapak).toLowerCase();
+      const nama = String(item.nama).toLowerCase();
+      return noLapak.includes(keyword) || nama.includes(keyword);
+    });
+
+    // Tampilkan hanya data yang cocok
+    renderAll(filteredData);
+  });
+
+  /* =============================
       SUMMARY & REKAP UKURAN
   ============================= */
   function renderSummary(data, rekapUkuran) {
-    // Info Umum
     document.getElementById('totalPelapak').textContent = data.length;
     document.getElementById('totalLunas').textContent =
       data.filter(d => d.status === "Lunas").length;
     document.getElementById('totalBelum').textContent =
       data.filter(d => d.status !== "Lunas").length;
 
-    // Info Rekap Ukuran Lunas (Tampilkan hanya jika elemennya ada di HTML)
     const rekapContainer = document.getElementById('rekapUkuranContainer');
     if (rekapContainer && rekapUkuran) {
       let html = '';
       for (const [ukuran, jumlah] of Object.entries(rekapUkuran)) {
-        if (jumlah > 0) { // Hanya tampilkan yang sudah ada terbayar
+        if (jumlah > 0) {
           html += `
             <div class="ukuran-item">
               <span class="label">${ukuran}</span>
@@ -81,7 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
   ============================= */
   function renderTable(data) {
     tableBody.innerHTML = '';
-
     data.forEach(row => {
       let installmentCols = '';
       for (let i = 1; i <= 10; i++) {
@@ -96,9 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>${row.jumlahPesan}</td>
           ${installmentCols} 
           <td>
-            <input type="checkbox"
-              ${row.qris ? 'checked' : ''}
-              data-nolapak="${row.noLapak}">
+            <input type="checkbox" ${row.qris ? 'checked' : ''} data-nolapak="${row.noLapak}">
           </td>
           <td>Rp ${Number(row.sisa).toLocaleString('id-ID')}</td>
           <td>
@@ -115,7 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
   ============================= */
   function renderCard(data) {
     cardContainer.innerHTML = '';
-
     data.forEach(row => {
       let installmentList = '';
       for (let i = 1; i <= 10; i++) {
@@ -136,24 +144,14 @@ document.addEventListener('DOMContentLoaded', () => {
               ${row.status}
             </span>
           </div>
-
           <div class="pelapak-body">
             <div class="item"><span>Ukuran</span><strong>${row.ukuran}</strong></div>
             <div class="item"><span>Jml Pesan</span><strong>${row.jumlahPesan}</strong></div>
-            
-            <div class="installment-grid">
-              ${installmentList}
-            </div>
-
-            <div class="item highlight"><span>Sisa Tagihan</span>
-              <strong>Rp ${Number(row.sisa).toLocaleString('id-ID')}</strong>
-            </div>
-
+            <div class="installment-grid">${installmentList}</div>
+            <div class="item highlight"><span>Sisa Tagihan</span><strong>Rp ${Number(row.sisa).toLocaleString('id-ID')}</strong></div>
             <div class="item full">
               <span>Potongan QRIS</span>
-              <input type="checkbox"
-                ${row.qris ? 'checked' : ''}
-                data-nolapak="${row.noLapak}">
+              <input type="checkbox" ${row.qris ? 'checked' : ''} data-nolapak="${row.noLapak}">
             </div>
           </div>
         </div>`;
@@ -167,7 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target.type === 'checkbox' && e.target.dataset.nolapak) {
       try {
         showLoading();
-
         const fd = new FormData();
         fd.append('action', 'updateQRIS');
         fd.append('noLapak', e.target.dataset.nolapak);
@@ -177,9 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const json = await res.json();
 
         if (!json.success) throw new Error(json.message);
-
-        // Memuat ulang data untuk memperbarui Sisa Tagihan dan Rekap Ukuran
-        loadData();
+        loadData(); // Refresh data setelah update
 
       } catch (err) {
         alert('Gagal update QRIS');
