@@ -1,6 +1,6 @@
 const API_URL = "https://script.google.com/macros/s/AKfycby4z2qZ24SrJkcyGpybH29lSUC_3_z1LG-7wSmTzpaOEXrwjXf0Cl3hqkg95qAxPj1-/exec";
 
-let allData = []; // Tempat menyimpan data asli dari API
+let allData = []; 
 
 document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('searchInput');
@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const loadingOverlay = document.getElementById('loadingOverlay');
 
   /* =============================
-      LOADING
+      LOADING STATE
   ============================= */
   const showLoading = () => loadingOverlay.classList.remove('hidden');
   const hideLoading = () => loadingOverlay.classList.add('hidden');
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (json.status !== "success") throw new Error("API error");
 
-      allData = json.hasil; // Simpan ke variabel global agar bisa di-filter
+      allData = json.hasil; 
       renderAll(allData);
       renderSummary(allData, json.rekapUkuranLunas);
 
@@ -38,21 +38,23 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* =============================
-      LOGIKA PENCARIAN (SEARCH) - TAMBAHKAN INI
+      LOGIKA PENCARIAN (FIXED FOR MOBILE)
   ============================= */
-  searchInput.addEventListener('input', (e) => {
-    const keyword = e.target.value.toLowerCase();
+  const handleSearch = () => {
+    const keyword = searchInput.value.toLowerCase().trim();
     
-    // Filter data berdasarkan No Lapak atau Nama
     const filteredData = allData.filter(item => {
-      const noLapak = String(item.noLapak).toLowerCase();
-      const nama = String(item.nama).toLowerCase();
+      const noLapak = String(item.noLapak || "").toLowerCase();
+      const nama = String(item.nama || "").toLowerCase();
       return noLapak.includes(keyword) || nama.includes(keyword);
     });
 
-    // Tampilkan hanya data yang cocok
     renderAll(filteredData);
-  });
+  };
+
+  // Gunakan 'input' untuk perubahan teks dan 'keyup' untuk kompatibilitas HP jadul
+  searchInput.addEventListener('input', handleSearch);
+  searchInput.addEventListener('keyup', handleSearch);
 
   /* =============================
       SUMMARY & REKAP UKURAN
@@ -81,18 +83,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* =============================
-      RENDER ALL
+      RENDER ALL (DESKTOP & MOBILE)
   ============================= */
   function renderAll(data) {
     renderTable(data);
     renderCard(data);
   }
 
-  /* =============================
-      TABLE (DESKTOP)
-  ============================= */
   function renderTable(data) {
     tableBody.innerHTML = '';
+    if (data.length === 0) {
+      tableBody.innerHTML = '<tr><td colspan="17" style="text-align:center; padding:20px;">Data tidak ditemukan</td></tr>';
+      return;
+    }
+
     data.forEach(row => {
       let installmentCols = '';
       for (let i = 1; i <= 10; i++) {
@@ -119,11 +123,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* =============================
-      CARD (MOBILE)
-  ============================= */
   function renderCard(data) {
     cardContainer.innerHTML = '';
+    if (data.length === 0) {
+      cardContainer.innerHTML = '<p style="text-align:center; padding:20px; color:#666;">Data tidak ditemukan</p>';
+      return;
+    }
+
     data.forEach(row => {
       let installmentList = '';
       for (let i = 1; i <= 10; i++) {
@@ -163,22 +169,25 @@ document.addEventListener('DOMContentLoaded', () => {
   ============================= */
   document.body.addEventListener('change', async (e) => {
     if (e.target.type === 'checkbox' && e.target.dataset.nolapak) {
+      const currentCheckbox = e.target;
       try {
         showLoading();
         const fd = new FormData();
         fd.append('action', 'updateQRIS');
-        fd.append('noLapak', e.target.dataset.nolapak);
-        fd.append('qris', e.target.checked ? 'true' : 'false');
+        fd.append('noLapak', currentCheckbox.dataset.nolapak);
+        fd.append('qris', currentCheckbox.checked ? 'true' : 'false');
 
         const res = await fetch(API_URL, { method: 'POST', body: fd });
         const json = await res.json();
 
         if (!json.success) throw new Error(json.message);
-        loadData(); // Refresh data setelah update
+        
+        // Refresh data agar sisa tagihan terupdate
+        await loadData(); 
 
       } catch (err) {
-        alert('Gagal update QRIS');
-        console.error(err);
+        alert('Gagal update QRIS: ' + err.message);
+        currentCheckbox.checked = !currentCheckbox.checked; // Revert jika gagal
       } finally {
         hideLoading();
       }
@@ -186,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* =============================
-      INIT
+      INITIALIZE
   ============================= */
   loadData();
 });
