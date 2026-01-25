@@ -57,79 +57,91 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCard(data);
   }
 
-  /* =============================
-     TABLE (DESKTOP)
-  ============================= */
-  function renderTable(data) {
-    tableBody.innerHTML = '';
+/* =============================
+    TABLE (DESKTOP) - Updated for 10 Installments
+============================= */
+function renderTable(data) {
+  tableBody.innerHTML = '';
 
-    data.forEach(row => {
-      tableBody.innerHTML += `
-<tr class="${row.status !== 'Lunas' ? 'belum-lunas' : ''}">
-  <td>${row.noLapak}</td>
-  <td>${row.nama}</td>
-  <td>${row.ukuran}</td>
-  <td>${row.jumlahPesan}</td>
-  <td>${row.angsuran.a1}</td>
-  <td>${row.angsuran.a2}</td>
-  <td>${row.angsuran.a3}</td>
-  <td>${row.angsuran.a4}</td>
-  <td>
-    <input type="checkbox"
-      ${row.qris ? 'checked' : ''}
-      data-nolapak="${row.noLapak}">
-  </td>
-  <td>Rp ${Number(row.sisa).toLocaleString('id-ID')}</td>
-  <td>
-    <span class="badge ${row.status === 'Lunas' ? 'badge-lunas' : 'badge-belum'}">
-      ${row.status}
-    </span>
-  </td>
-</tr>`;
-    });
-  }
+  data.forEach(row => {
+    // Generate kolom angsuran 1-10 secara dinamis
+    let installmentCols = '';
+    for (let i = 1; i <= 10; i++) {
+      installmentCols += `<td>${row.angsuran['a' + i] || 0}</td>`;
+    }
 
-  /* =============================
-     CARD (MOBILE)
-  ============================= */
-  function renderCard(data) {
-    cardContainer.innerHTML = '';
+    tableBody.innerHTML += `
+      <tr class="${row.status !== 'Lunas' ? 'belum-lunas' : ''}">
+        <td>${row.noLapak}</td>
+        <td>${row.nama}</td>
+        <td>${row.ukuran}</td>
+        <td>${row.jumlahPesan}</td>
+        ${installmentCols} 
+        <td>
+          <input type="checkbox"
+            ${row.qris ? 'checked' : ''}
+            data-nolapak="${row.noLapak}">
+        </td>
+        <td>Rp ${Number(row.sisa).toLocaleString('id-ID')}</td>
+        <td>
+          <span class="badge ${row.status === 'Lunas' ? 'badge-lunas' : 'badge-belum'}">
+            ${row.status}
+          </span>
+        </td>
+      </tr>`;
+  });
+}
 
-    data.forEach(row => {
-      cardContainer.innerHTML += `
-<div class="pelapak-card ${row.status !== 'Lunas' ? 'belum-lunas' : ''}">
-  <div class="pelapak-header">
-    <div>
-      <div class="lapak">Lapak ${row.noLapak}</div>
-      <div class="nama">${row.nama}</div>
-    </div>
-    <span class="badge ${row.status === 'Lunas' ? 'badge-lunas' : 'badge-belum'}">
-      ${row.status}
-    </span>
-  </div>
+/* =============================
+    CARD (MOBILE) - Updated for 10 Installments
+============================= */
+function renderCard(data) {
+  cardContainer.innerHTML = '';
 
-  <div class="pelapak-body">
-    <div class="item"><span>Ukuran Kaos</span><strong>${row.ukuran}</strong></div>
-    <div class="item"><span>Jumlah Pesanan</span><strong>${row.jumlahPesan}</strong></div>
-    <div class="item"><span>Angsuran 1</span><strong>${row.angsuran.a1}</strong></div>
-    <div class="item"><span>Angsuran 2</span><strong>${row.angsuran.a2}</strong></div>
-    <div class="item"><span>Angsuran 3</span><strong>${row.angsuran.a3}</strong></div>
-    <div class="item"><span>Angsuran 4</span><strong>${row.angsuran.a4}</strong></div>
-    <div class="item"><span>Sisa Tagihan</span>
-      <strong>Rp ${Number(row.sisa).toLocaleString('id-ID')}</strong>
-    </div>
+  data.forEach(row => {
+    // Generate list angsuran 1-10 untuk mobile
+    let installmentList = '';
+    for (let i = 1; i <= 10; i++) {
+      const nilai = row.angsuran['a' + i] || 0;
+      // Hanya tampilkan di mobile jika sudah ada isinya (opsional, agar card tidak terlalu panjang)
+      // Jika ingin tampil semua, hapus kondisi if(nilai > 0)
+      if (nilai > 0 || i <= 4) { 
+        installmentList += `<div class="item"><span>Angsuran ${i}</span><strong>${nilai}</strong></div>`;
+      }
+    }
 
-    <div class="item full">
-      <span>Punya QRIS Danamon</span>
-      <input type="checkbox"
-        ${row.qris ? 'checked' : ''}
-        data-nolapak="${row.noLapak}">
-    </div>
-  </div>
-</div>`;
-    });
-  }
+    cardContainer.innerHTML += `
+      <div class="pelapak-card ${row.status !== 'Lunas' ? 'belum-lunas' : ''}">
+        <div class="pelapak-header">
+          <div>
+            <div class="lapak">Lapak ${row.noLapak}</div>
+            <div class="nama">${row.nama}</div>
+          </div>
+          <span class="badge ${row.status === 'Lunas' ? 'badge-lunas' : 'badge-belum'}">
+            ${row.status}
+          </span>
+        </div>
 
+        <div class="pelapak-body">
+          <div class="item"><span>Ukuran Kaos</span><strong>${row.ukuran}</strong></div>
+          <div class="item"><span>Jumlah Pesanan</span><strong>${row.jumlahPesan}</strong></div>
+          
+          ${installmentList}
+
+          <div class="item highlight"><span>Sisa Tagihan</span>
+            <strong>Rp ${Number(row.sisa).toLocaleString('id-ID')}</strong>
+          </div>
+
+          <div class="item full">
+            <span>Punya QRIS Danamon</span>
+            <input type="checkbox"
+              ${row.qris ? 'checked' : ''}
+              data-nolapak="${row.noLapak}">
+          </div>
+        </div>
+      </div>`;
+  });
+}
   /* =============================
      UPDATE QRIS (PAKAI NO LAPAK)
   ============================= */
