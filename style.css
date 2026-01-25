@@ -179,6 +179,111 @@ tr.belum-lunas:hover {
   color: #c2185b;
 }
 
+/* =======================================
+   BARU: REKAP UKURAN KAOS (LUNAS)
+   ======================================= */
+.rekap-container {
+    margin-top: 20px;
+    background: #ffffff;
+    border: 2px dashed #2e7d32; /* Border putus-putus tanda area produksi */
+    border-radius: 18px;
+    padding: 16px;
+}
+
+.rekap-container h3 {
+    font-size: 15px;
+    margin: 0 0 14px 0;
+    color: #1b5e20;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rekap-grid {
+    display: grid;
+    /* Membuat kotak ukuran otomatis menyesuaikan lebar layar */
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 10px;
+}
+
+.ukuran-item {
+    background: #f1f8e9;
+    border: 1px solid #c8e6c9;
+    border-radius: 12px;
+    padding: 8px 4px;
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.ukuran-item:hover {
+    transform: translateY(-3px);
+    background: #e8f5e9;
+}
+
+.ukuran-item .label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    color: #4caf50;
+    margin-bottom: 2px;
+}
+
+.ukuran-item .val {
+    display: block;
+    font-size: 20px;
+    font-weight: 800;
+    color: #1b5e20;
+}
+
+/* =======================================
+   INFO QRIS & LAINNYA
+   ======================================= */
+.qris-info {
+    margin: 20px 0;
+    padding: 14px;
+    background: #fff8e1;
+    border-left: 5px solid #ffc107;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* =======================================
+   GRID ANGSURAN DI MOBILE (BIAR RAPI)
+   ======================================= */
+.installment-grid {
+    grid-column: span 2; /* Full lebar card */
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 kolom per baris */
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.installment-grid .item {
+    padding: 4px 2px;
+    background: #f9f9f9;
+    border: 1px solid #eee;
+}
+
+.installment-grid .item span {
+    font-size: 9px;
+}
+
+.installment-grid .item strong {
+    font-size: 11px;
+}
+
+/* Penyesuaian Item Highlight di Mobile */
+.item.highlight {
+    grid-column: span 2;
+    background: #e8f5e9;
+    border: 1px solid #2e7d32;
+}
+
+.item.highlight strong {
+    font-size: 16px;
+    color: #2e7d32;
+}
 /* ================= MOBILE CARD ================= */
 .mobile-view {
   display: none;
